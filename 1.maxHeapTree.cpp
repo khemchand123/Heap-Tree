@@ -1,57 +1,36 @@
+
 #include<iostream>
 using namespace std;
 #include<vector>
 #include<algorithm>
 
-void upHeapify(vector<int> &heap,int child){
-     //base case
-     if(child==0){
-        return;
-     }
-
-     //recursive case
-     int parent = (child-1)/2;
-     if(heap[parent]<heap[child]){
-        swap(heap[parent],heap[child]);
-        upHeapify(heap,parent);
-     }
-     else{
-        return;
-     }
-}
-
-void buildHeapU(vector<int> &heap){
-     for(int i=0;i<heap.size();i++){
-        upHeapify(heap,i);
-     }
-}
 
 void Display(vector<int> heap){
-     cout<<"heap representation :";
+
      for(int i=0;i<heap.size();i++){
         cout<<heap[i]<<",";
      }
      cout<<endl;
 }
 
-void dHeapify(vector<int> &heap,int parent){
+void dHeapify(vector<int> &heap,int parent,int heapSize){
      int lChild = 2*parent+1;
      int rChild = 2*parent+2;
 
-     if(lChild>=heap.size() && rChild>=heap.size()){
+     if(lChild>=heapSize && rChild>=heapSize){
         return;
      }
 
      int largest=parent;
-     if(lChild<heap.size() && heap[lChild]>heap[parent]){
+     if(lChild<heapSize && heap[lChild]>heap[parent]){
         largest=lChild;
      }
-     if(rChild<heap.size() && heap[rChild]>heap[largest]){
+     if(rChild<heapSize && heap[rChild]>heap[largest]){
         largest=rChild;
      }
      if(heap[parent]<heap[largest]){
         swap(heap[parent],heap[largest]);
-        dHeapify(heap,largest);
+        dHeapify(heap,largest,heapSize);
      }
      else{
         return;
@@ -60,7 +39,7 @@ void dHeapify(vector<int> &heap,int parent){
 
 void buildHeapD(vector<int> &heap){
      for(int i=(heap.size())-1;i>=0;i--){
-         dHeapify(heap,i);
+         dHeapify(heap,i,heap.size());
      }
 }
 int main(){
@@ -75,7 +54,19 @@ int main(){
         heap.push_back(item);
     }
 
-    //buildHeapU(heap);  //time o(nlogn)
-    buildHeapD(heap);    //time o(n)
+    buildHeapD(heap);
+    cout<<" heap tree :";
     Display(heap);
+
+    int lastElementLoc = heap.size()-1;
+
+
+    while(lastElementLoc>0){
+        swap(heap[0],heap[lastElementLoc]);
+        lastElementLoc=lastElementLoc-1;     //location
+        dHeapify(heap,0,lastElementLoc+1);  //reapresent size of heap
+    }
+    cout<<"sorted array : ";
+    Display(heap);
+
 }

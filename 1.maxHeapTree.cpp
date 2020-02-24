@@ -3,100 +3,66 @@ using namespace std;
 #include<vector>
 #include<algorithm>
 
-void heapify(vector<int> &heap,int child){
-     if(child==0)
+void upHeapify(vector<int> &heap,int child){
+     //base case
+     if(child==0){
         return;
+     }
+
+     //recursive case
      int parent = (child-1)/2;
      if(heap[parent]<heap[child]){
         swap(heap[parent],heap[child]);
-        heapify(heap,parent);
+        upHeapify(heap,parent);
      }
      else{
         return;
      }
 }
 
-void buildHeap(vector<int> &heap,int data){
-     heap.push_back(data);
-     heapify(heap,heap.size()-1);
+void buildHeapU(vector<int> &heap){
+     for(int i=0;i<heap.size();i++){
+        upHeapify(heap,i);
+     }
 }
 
-void display(vector<int> heap){
-     for(auto it=heap.begin();it!=heap.end();it++)
-        cout<<*it<<",";
+void Display(vector<int> heap){
+     cout<<"heap representation :";
+     for(int i=0;i<heap.size();i++){
+        cout<<heap[i]<<",";
+     }
+     cout<<endl;
 }
 
-void Dheapify(vector<int> &heap,int parent){
+void dHeapify(vector<int> &heap,int parent){
+     int lChild = 2*parent+1;
+     int rChild = 2*parent+2;
 
-     int leftChild = 2*parent+1;
-     int rightChild = 2*parent+2;
-
-     if(leftChild<=heap.size() and rightChild<=heap.size())
-    {
-
-
-          cout<<"right chil :"<<heap[rightChild]<<endl;
-          int lp;//local child pointer max
-          if(heap[leftChild]>heap[rightChild]){
-          lp = leftChild;
-          }
-          else{
-             lp = rightChild;
-          }
-         if(heap[parent]<heap[lp]){
-             swap(heap[parent],heap[lp]);
-            Dheapify(heap,lp);
-         }
-        else{
-          return;
-        }
-    }
-    else{
-        if(leftChild==heap.size()){
-             if(heap[parent]<heap[leftChild]){
-                swap(heap[parent],heap[leftChild]);
-         }
-         else{
-            return;
-         }
-        }
-    }
-}
-
-void deletePeek(vector<int> &heap){
-     int S = heap.size();
-     if(S==1){
-        heap.pop_back();
+     if(lChild>=heap.size() && rChild>=heap.size()){
         return;
      }
+
+     int largest=parent;
+     if(lChild<heap.size() && heap[lChild]>heap[parent]){
+        largest=lChild;
+     }
+     if(rChild<heap.size() && heap[rChild]>heap[largest]){
+        largest=rChild;
+     }
+     if(heap[parent]<heap[largest]){
+        swap(heap[parent],heap[largest]);
+        dHeapify(heap,largest);
+     }
      else{
-        int lastChild = S-1;
-        heap[0]=heap[lastChild];
-        heap.pop_back();
-        Dheapify(heap,0);
+        return;
      }
 }
 
-/* int main(){
- *     vector<int> heap;
- *     //cout<<heap[3]<<"enter number : ";
- *     for(int i=0;i<3;i++){
- *         int data;
- *         cin>>data;
- *         buildHeap(heap,data);
- *     }
- *     display(heap);
- *
- *     deletePeek(heap);
- *     cout<<endl;
- *     display(heap);
- * }
- */
-
-void x2(int a){
-    cout<<a*2<<"'";
+void buildHeapD(vector<int> &heap){
+     for(int i=(heap.size())-1;i>=0;i--){
+         dHeapify(heap,i);
+     }
 }
-
 int main(){
     vector<int> heap;
     cout<<"enter the size of heap Array representation : ";
@@ -109,12 +75,7 @@ int main(){
         heap.push_back(item);
     }
 
-
-
-    for_each(heap.begin(),heap.end(),x2);
-
-    for(auto it=heap.begin();it!=heap.end();it++){
-        cout<<*it<<",";
-    }
-
+    //buildHeapU(heap);  //time o(nlogn)
+    buildHeapD(heap);    //time o(n)
+    Display(heap);
 }
